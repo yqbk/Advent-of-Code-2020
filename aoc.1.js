@@ -1,33 +1,50 @@
-const { readFileSync } = require('fs')
-const filename = 'input.txt'
+const { readFileSync } = require("fs");
+
+const filename = "input.txt";
+const NEEDED_VALUE = 2020;
 
 const arrayOfStrings = readFileSync(filename)
   .toString()
-  .replace(/\r\n/g, '\n')
-  .split('\n')
+  .replace(/\r\n/g, "\n")
+  .split("\n");
 
-const array = new Uint32Array(arrayOfStrings.map((str) => Number(str)))
-
-console.log('Start')
-
-const sortedArray = array.sort()
-
-console.log('sortedArray')
+const sortedArray = arrayOfStrings
+  .map((str) => Number(str))
+  .sort((a, b) => a - b);
 
 const findResult = () => {
-  return sortedArray.find((value) => {
-    const secondNumber = sortedArray.find((number) => number === 2020 - value)
+  for (let firstIndex = 0; firstIndex < sortedArray.length; firstIndex++) {
+    const firstNumber = sortedArray[firstIndex];
 
-    if (!secondNumber || secondNumber === 0) return false
+    if (firstNumber >= NEEDED_VALUE) break;
 
-    console.log('RESULT', {
-      value,
-      lookingFor: 2020 - value,
-      secondNumber,
-      multiply: value * secondNumber,
-    })
-    return value * secondNumber
-  })
-}
+    for (let secondIndex = 0; secondIndex < sortedArray.length; secondIndex++) {
+      const secondNumber = sortedArray[secondIndex];
 
-console.log(findResult())
+      if (firstNumber + secondNumber >= NEEDED_VALUE) break;
+
+      for (let thirdIndex = 0; thirdIndex < sortedArray.length; thirdIndex++) {
+        const thirdNumber = sortedArray[thirdIndex];
+
+        const sum = firstNumber + secondNumber + thirdNumber;
+        const multipliedValues = firstNumber * secondNumber * thirdNumber;
+
+        if (sum === NEEDED_VALUE &&  multipliedValues !== 0) {
+          console.log("Result:", {
+            sum,
+            values: {
+              firstNumber,
+              secondNumber,
+              thirdNumber,
+            },
+            multipliedValues
+          });
+        }
+
+        if (sum >= NEEDED_VALUE) break;
+      }
+    }
+  }
+};
+
+findResult();
