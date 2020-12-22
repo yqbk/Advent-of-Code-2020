@@ -28,7 +28,7 @@ const getPosition = (coords, max) => coords.reduce((range, direction) => {
 
 }, [0, max])[0]
 
-const findSeat = (input) => {
+const getBoardingPassData = (input) => {
     const rowCoords = input.slice(0,7).split('')
     const colCoords = input.slice(7,10).split('') 
 
@@ -42,7 +42,7 @@ const findSeat = (input) => {
 const getSeatId = (row, col) => row * 8 + col
 
 const test = (input, data) => {
-    if (JSON.stringify(findSeat(input))  !== JSON.stringify(data)) {
+    if (JSON.stringify(getBoardingPassData(input))  !== JSON.stringify(data)) {
         console.log('FAILED', input)
     }
 }
@@ -74,4 +74,19 @@ const testData = {
 Object.keys(testData).forEach(boardingPass => test(boardingPass, testData[boardingPass]))
 
 // Part 1 solution
-console.log(input.map(boardingPass => findSeat(boardingPass).seatId).sort().reverse()[0])
+const sortedSeatIds = input.map(boardingPass => getBoardingPassData(boardingPass).seatId).sort()
+console.log('Biggest SeatId', sortedSeatIds[sortedSeatIds.length-1])
+
+// Part 2 solution
+const findSeatId = () => {
+    const availableSeatIds = sortedSeatIds.slice(1, sortedSeatIds.length)
+    
+    for(const [index, seatID] of availableSeatIds.entries()){
+        if (availableSeatIds[index + 1] !== seatID + 1){
+            console.log('Your seat ID:', seatID + 1 )
+            break;
+        }
+    }
+}
+
+findSeatId()
